@@ -22,11 +22,6 @@ agent any
                 sh 'docker run -d --name $CONTAINER_NAME$BUILD_NUMBER -p 80$BUILD_NUMBER:8080 --restart unless-stopped $DOCKER_HUB_REPO:$BUILD_NUMBER && docker ps'
             }
         }
-        stage ('Container Testing ') {
-            steps {
-                sh 'wget localhost:80$BUILD_NUMBER'
-            }
-        }
         stage ('DockerHub Login and push') {
             steps {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin && docker push $DOCKER_HUB_REPO:$BUILD_NUMBER'
