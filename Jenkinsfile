@@ -14,22 +14,22 @@ agent any
     stages {
         stage ('Docker Image Build') {
             steps {
-                bat 'docker build -t $DOCKER_HUB_REPO:$BUILD_NUMBER .'
+                sh 'docker build -t $DOCKER_HUB_REPO:$BUILD_NUMBER .'
             }
         }
         stage ('create container') {
             steps {
-                bat 'docker run -d --name $CONTAINER_NAME$BUILD_NUMBER -p 80$BUILD_NUMBER:8080 --restart unless-stopped $DOCKER_HUB_REPO:$BUILD_NUMBER && docker ps'
+                sh 'docker run -d --name $CONTAINER_NAME$BUILD_NUMBER -p 80$BUILD_NUMBER:8080 --restart unless-stopped $DOCKER_HUB_REPO:$BUILD_NUMBER && docker ps'
             }
         }
         stage ('Container Testing ') {
             steps {
-                bat 'curl localhost:80$BUILD_NUMBER'
+                sh 'wget localhost:80$BUILD_NUMBER'
             }
         }
         stage ('DockerHub Login and push') {
             steps {
-                bat 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin && docker push $DOCKER_HUB_REPO:$BUILD_NUMBER'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin && docker push $DOCKER_HUB_REPO:$BUILD_NUMBER'
             }
         }
     }
