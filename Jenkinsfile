@@ -24,7 +24,7 @@ agent any
         }
         stage ('Container Testing ') {
             steps {
-                sh 'wget localhost:800$BUILD_NUMBER'
+                sh 'wget localhost:80$BUILD_NUMBER'
             }
         }
         stage ('DockerHub Login and push') {
