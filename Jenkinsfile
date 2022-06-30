@@ -19,7 +19,7 @@ agent any
         }
         stage ('create container') {
             steps {
-                sh 'docker run -d --name $CONTAINER_NAME$BUILD_NUMBER -p 800$BUILD_NUMBER:8080 --restart unless-stopped $DOCKER_HUB_REPO:$BUILD_NUMBER && docker ps'
+                sh 'docker run -d --name $CONTAINER_NAME$BUILD_NUMBER -p 80$BUILD_NUMBER:8080 --restart unless-stopped $DOCKER_HUB_REPO:$BUILD_NUMBER && docker ps'
             }
         }
         stage ('Container Testing ') {
