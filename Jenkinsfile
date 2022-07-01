@@ -32,7 +32,9 @@ agent any
         }
         stage ('DockerHub Login and push') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin && docker push $DOCKER_HUB_REPO:$BUILD_NUMBER'
+                withCredentials([usernameColonPassword(credentialsId: 'dockerhub_id', variable: 'dockerhub')]) {
+                    sh 'docker push $DOCKER_HUB_REPO:$BUILD_NUMBER'
+                }
             }
         }
     }
