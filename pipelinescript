@@ -1,0 +1,22 @@
+node {
+  environment {
+         DOCKERHUB_CREDENTIALS = credentials('dockerhub_id')
+    }
+     stage ("checkout")  {
+      checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '7317ac11-ae50-4fa2-9fd8-fe6964cbd6fd', url: 'https://github.com/kishore0420/demo7.git']]])
+    }
+    stage ("cleaning docker desktop")  {
+    sh 'docker stop $(docker ps -a -q) || true && docker rm $(docker ps -a -q) || true && docker rmi -f $(docker images  -a -q) || true'
+    }
+    stage ("Docker Image Build")  {
+    sh 'docker build -t kishoreking90/myrepo:$BUILD_NUMBER .'
+    }
+    stage ("create container")  {
+    sh 'docker run -d --name nginxcontainer -p 8085:80 --restart unless-stopped kishoreking90/myrepo:$BUILD_NUMBER && docker ps'
+    }
+    stage ("DockerHub Login and push")  {
+    withCredentials([usernameColonPassword(credentialsId: 'dockerhub_id', variable: 'dockerhub')]) {
+    sh 'docker push kishoreking90/myrepo:$BUILD_NUMBER'
+    }
+  }
+}
